@@ -1,3 +1,1 @@
-const saySomething = () => console.log('HELLO')
-
-saySomething()
+import React from "react";

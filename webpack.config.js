@@ -2,13 +2,40 @@
 const  path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const { LoaderOptionsPlugin } = require('webpack')
 
 let mode = 'development'
 
+const plugins = [
+    new HtmlWebpackPlugin({
+    template: path.resolve(__dirname,'./src/index.html'),
+    filename: 'index.html'
+}),
+new MiniCssExtractPlugin({
+    filename: '[name].[contenthash].css'
+}),
+
+new LoaderOptionsPlugin({
+    minimize: true,
+    debug: false,
+    options: {
+      context: __dirname,
+      devtools: 'source-map'
+    }
+  })
+
+]
+
 if (process.env.NODE_ENV === 'production') {
     mode = 'production'
 }
+
+if (process.env.SERVE) {
+    plugins.push(new ReactRefreshWebpackPlugin())
+}
+
+
 
 module.exports = {
     mode,
@@ -24,30 +51,13 @@ module.exports = {
         hot: true
     },
 
-    plugins: [
-        new HtmlWebpackPlugin({
-        template: path.resolve(__dirname,'./src/index.html'),
-        filename: 'index.html'
-    }),
-    new MiniCssExtractPlugin({
-        filename: '[name].[contenthash].css'
-    }),
-
-    new LoaderOptionsPlugin({
-        minimize: true,
-        debug: false,
-        options: {
-          context: __dirname,
-          devtools: 'source-map'
-        }
-      })
-    
-],
+    plugins,
 
     module: {
         
 
         rules: [
+           
             { 
                 test: /\.(html)$/, use: ['html-loader'],
             },
